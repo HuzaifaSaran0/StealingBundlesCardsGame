@@ -34,7 +34,7 @@ def dealer_Card_distribution():
 def Type(value_to_check_type, value_index):
     try:
         int_value = int(value_to_check_type)
-        Match(int_value, value_index)
+        Match(str(int_value), value_index)
     except ValueError:
         Match(value_to_check_type.capitalize(), value_index)
 
@@ -44,13 +44,16 @@ def Match(thrown, index):
         removed_card = thrown
         cards_on_the_screen.remove(thrown)
         players[index - 1].append(removed_card)
-        other_players_card[index].append(removed_card)
+        other_players_card[index - 1].clear()
+        other_players_card[index - 1].append(removed_card)
 
     elif thrown in other_players_card[index]:
+        pass
         # removed_card = thrown
         # other_players_card[index].remove(thrown)
-        removed_card = To_remove_from_other_players_cards(thrown, index)
-        players[index - 1].append(removed_card)
+        # removed_card = To_remove_from_other_players_cards(thrown, index)
+        # players[index - 1].append(removed_card)
+
     else:
         cards_on_the_screen.append(thrown)
 
@@ -59,7 +62,7 @@ def To_remove_from_other_players_cards(value, index_no):
     for i in other_players_card:
         if i != index_no:
             for j in i:
-                if value == j:
+                if value == [i][j]:
                     the_removed_value = value
                     other_players_card[j].remove(value)
                     return the_removed_value
@@ -67,7 +70,7 @@ def To_remove_from_other_players_cards(value, index_no):
 
 # dealer_Card_distribution()  # Throw1
 screen_card()
-while cards != 0:
+while cards:
     # if (p1 == [] or p2 == [] or p3 == [] or p4 == [])
     if distributions < 3:
         time.sleep(1)
@@ -78,10 +81,16 @@ while cards != 0:
     for player_input in range(4):
         print(f"\n\n-----Player {player_input + 1} Turn-----")
         if players[player_input]:
-            print(f"Player{player_input + 1}'s Cards = {players[player_input]}")
-            print(f"Screen Cards = {cards_on_the_screen}")
-            print(f"Other Player's Cards = {other_players_card}")
-            thrown_number = input("Write Card Number to match:")
+            print(f"Player{player_input + 1}'s Cards: \n\t\t\t\t{players[player_input]}")
+            print(f"Screen Cards: \n\t\t\t\t{cards_on_the_screen}")
+            print(f"Other Players Cards:", end="")
+            [print(f"\n\t\t\t\tPlayer{index + 1} Cards are :{card}", end="")
+             if index != player_input
+             else print(f"\n\t\t\t\tPlayer{index + 1} Cards are: []", end="")
+             for index, card in enumerate(other_players_card)]
+
+            # print(f"Other Player's Cards = {other_players_card}'Cards at Position {player_input + 1} are Your own.'")
+            thrown_number = input("\nWrite Card Number to match:")
             Type(thrown_number, player_input + 1)
             time.sleep(1)
         #     Call the function to check if it matches or not
@@ -89,5 +98,3 @@ while cards != 0:
         #     print("----- MATCH -----")
         #     else:
         #     print("----- PASS -----")
-
-
