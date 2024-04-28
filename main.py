@@ -138,4 +138,4 @@ class CardsGame:
         # print(other_player_list)
 
 
-startGame = CardsGame()
+startGame = CardsGame() dd
