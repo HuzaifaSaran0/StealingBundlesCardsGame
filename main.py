@@ -1,141 +1,157 @@
 import random
-import time
+
+# Initialize player hands and piles
+p1, p2, p3, p4 = [], [], [], []
+pile1, pile2, pile3, pile4 = [], [], [], []
+screen_cards = []
+players = [p1, p2, p3, p4]
+piles = [pile1, pile2, pile3, pile4]
+pile_ending_cards_collection = []
+distributions = 1
+dealer_cards = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"] * 4
+match_condition = False  # Flag to indicate if a card has matched with screen cards or other player's piles
 
 
-class CardsGame:
-    def __init__(self):
-        # Initialize the game with a deck of cards, player hands, screen cards, and other players' matched cards
-        self.cards = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"] * 4
-        self.player1 = []
-        self.player2 = []
-        self.player3 = []
-        self.player4 = []
-        self.cards_on_the_screen = []
-        self.distributions = 0
-        self.other_players_card = [[], [], [], []]  # Only those which were matched
-        self.players = [self.player1, self.player2, self.player3, self.player4]
-        self.winner = 0
-        self.game_started = False
-        self.count = 0
+# Function to distribute screen cards
+def screen_cards_distribution():
+    for k in range(4):
+        Index = random.randint(0, len(dealer_cards) - 1)
+        s_card = dealer_cards.pop(Index)
+        screen_cards.append(s_card)
 
-        # Start the game by distributing cards and displaying the initial screen
-        self.screen_card()
-        while self.cards or self.cards_on_the_screen:
-            if self.game_started:
-                for player_hand in self.players:
-                    if len(player_hand) == 0 and not self.cards_on_the_screen:
-                        # print(player_hand)
-                        self.count += 1
+
+# Function to distribute cards to players
+def dealer_Card_distribution():
+    for the_card in range(4):
+        for j in range(4):
+            value_removed = random.randint(0, len(dealer_cards) - 1)
+            card = dealer_cards.pop(value_removed)
+            players[the_card].append(card)
+
+
+# Function to handle card matching logic
+def match_card(card, player_number):
+    if card in players[player_number]:
+        removed_card = card
+        players[player_number].remove(card)
+        for index_number in range(4):
+            global match_condition
+            match_condition = False
+            for pile_card in range(4):
+                if piles[pile_card] or not piles[pile_card]:
+                    if piles[pile_card]:
+                        if removed_card == piles[pile_card][-1] and not player_number == pile_card:
+                            piles[player_number].extend(piles[pile_card])
+                            piles[player_number].append(removed_card)
+                            piles[pile_card].clear()
+                            match_condition = True
+                            break
                     else:
-                        self.winner = self.players.index(player_hand)
-                        # print(f"not {player_hand}")
+                        continue
+            if match_condition:
+                break
+            if removed_card in screen_cards:
+                screen_cards.remove(removed_card)
+                Screen_removed_card = removed_card
+                piles[player_number].append(Screen_removed_card)
+                piles[player_number].append(removed_card)
+                match_condition = True
+                break
+            else:
+                screen_cards.append(removed_card)
+                match_condition = True
+                break
+    else:
+        print("Wrong Card Number, Throw Again:")
+        card_throw(player_number)
 
-                if self.count < 2:
-                    if self.distributions < 3:
-                        time.sleep(1)
-                        print(f"\n\n----------Distribution # {self.distributions + 1}----------\n\n")
-                        self.dealer_Card_distribution()
-                        self.distributions += 1
 
-                    # Allow each player to take their turn
-                    for player_input in range(4):
-                        print(f"\n\n-----Player {player_input + 1} Turn-----")
-                        if self.players[player_input]:
-                            print(f"Your Cards: \n\t\t\t\t{self.players[player_input]}")
-                            print(f"Screen Cards: \n\t\t\t\t{self.cards_on_the_screen}")
-                            print(f"Other Players Cards:", end="")
-                            [print(f"\n\t\t\t\tPlayer{index + 1} Cards are :{card}", end="")
-                             if index != player_input
-                             else print(f"\n\t\t\t\tPlayer{index + 1} Cards are: []", end="")
-                             for index, card in enumerate(self.other_players_card)]
+# Function to handle player's turn for throwing a card
+def card_throw(player_number):
+    card = input("Enter card number to throw a card:")
+    return card_through_type(card, player_number)
 
-                            # Prompt the player to match a card from their hand with a card on the screen
 
-                            thrown_number = self.getting_card()
-                            self.Type(thrown_number, player_input + 1)
-                            time.sleep(1)
-                        else:
-                            print("You have no more cards to play")
-                    self.count = 0
+# Function to handle input validation for card throwing
+def card_through_type(card, the_player_number):
+    try:
+        the_card = card.capitalize()
+        return match_card(the_card, the_player_number)
+    except TypeError:
+        return match_card(str(card), the_player_number)
+
+
+# Function to check the condition for distribution
+def distribution_condition_checking(the_current_player):
+    # PILE COLLECTION START
+    if distributions < 3:
+        for p in piles:
+            if p:
+                if piles.index(p) == players.index(the_current_player):
+                    pile_ending_cards_collection.append("")
                 else:
-                    print("------Game Over------")
-                    scores = []
-                    self.players[self.winner].extend(self.cards_on_the_screen)
-                    for player in self.players:
-                        scores.append(len(player))
-                    print(f"Player 1 Score: {scores[0]}\nPlayer 2 Score: {scores[1]}\nPlayer 3 Score:"
-                          f" {scores[2]}\nPlayer 4 Score: {scores[3]}")
-                    print(f"-----Winner is Player {scores.index(max(scores)) + 1}------")
-                    break
+                    pile_ending_cards_collection.append(p[-1])
             else:
-                # self.dealer_Card_distribution()
-                self.game_started = True
+                pile_ending_cards_collection.append("")
+    # PILE COLLECTION END
 
-    def getting_card(self):
-        card = input("\nWrite Card Number to match:")
-        return card
+    # CHECKING CARD MATCHING START
+    for every_player in players:
+        if every_player:
+            pile_ending_cards_collection.clear()
+            return True
+    pile_ending_cards_collection.clear()
+    return False
 
-    def screen_card(self):
-        for k in range(4):
-            index = random.randint(0, len(self.cards) - 1)
-            s_card = self.cards.pop(index)
-            self.cards_on_the_screen.append(s_card)
 
-    # Method to distribute cards to players
-    def dealer_Card_distribution(self):
-        for i in range(4):
-            for j in range(4):
-                index = random.randint(0, len(self.cards) - 1)
-                card = self.cards.pop(index)
-                self.players[i].append(card)
+# Function to handle playing again
+# def play_again():
+#     choice = input("Wanna Play Again??(yes/no):")
+#     if choice.upper() == "YES":
+#         return True
+#     else:
+#         return False
 
-    # Method to determine the type of input (number or string) and call the matching method accordingly
-    def Type(self, value_to_check_type, value_index):
-        try:
-            int_value = int(value_to_check_type)
-            self.Match(str(int_value), value_index)
-        except ValueError:
-            self.Match(value_to_check_type.capitalize(), value_index)
 
-    def other_players_match(self, the_index):
-        other_list = []
-        for i in self.other_players_card:  # I want to make that when the person whose turn is to match then his
-            if self.other_players_card.index(i) == the_index:  # Changed This line
-                other_list.append("")
-            elif i:  # matched cards should not be shown
-                for j in i:
-                    other_list.append(j)
+# Function to handle end of the game
+def Game_over(index_of_last_player_matching):
+    print("------Game Over-------")
+    piles[index_of_last_player_matching].extend(screen_cards)
+    for i in range(4):
+        piles[i].extend(players[i])
+        players[i].clear()
+    scores = []
+    print("------Scores-------")
+    for scorer in piles:
+        print(f"Player {piles.index(scorer) + 1}: {len(scorer)}")
+        scores.append(len(scorer))
+    screen_cards.clear()
+    print(f"Winner is Player {scores.index(max(scores)) + 1}")
+    exit()
+
+
+# Start of the game
+print(f"\n------Distribution number {distributions}------")
+screen_cards_distribution()
+dealer_Card_distribution()
+
+game_started = True
+while game_started:
+    for the_player in players:
+        if not distribution_condition_checking(the_player):
+            if distributions < 3:
+                dealer_Card_distribution()
+                distributions += 1
+                print(f"\n------Distribution number {distributions}------")
             else:
-                other_list.append("")
-        return other_list
+                Game_over(players.index(the_player))
 
-    # Method to match the thrown card with cards on the screen or other players' matched cards
-    def Match(self, thrown, index):
-        # card_thrown = False
+        print(f"\n--------Player{players.index(the_player) + 1}'s Turn--------\n")
+        print(f"Your cards: {the_player}")
+        print(f"Screen cards: {screen_cards}")
+        for player in range(4):
+            print(f"Player{player + 1} pile: "
+                  f"{piles[player][-1] if piles[player] and not player == players.index(the_player) else []}")
+        card_throw(players.index(the_player))  # Prompt the player to match a card from their
+        # hand with a card on the screen
 
-        if thrown in self.players[index - 1]:
-            # card_thrown = True
-            other_player_list = self.other_players_match(index - 1)
-            if thrown in other_player_list:
-                self.other_players_card[index - 1] = []
-                self.other_players_card[index - 1].append(thrown)
-                self.other_players_card[other_player_list.index(thrown)] = []
-                self.players[index - 1].extend(self.players[other_player_list.index(thrown)])
-                self.players[other_player_list.index(thrown)] = []
-
-            elif thrown in self.cards_on_the_screen:
-                removed_card = thrown
-                self.cards_on_the_screen.remove(thrown)
-                self.players[index - 1].append(removed_card)
-                self.other_players_card[index - 1].clear()
-                self.other_players_card[index - 1].append(removed_card)
-
-            else:
-                self.cards_on_the_screen.append(thrown)
-        else:
-            print("Invalid Card Number, You lost your turn")
-        # other_player_list = self.other_players_match(index - 1)
-        # print(other_player_list)
-
-
-startGame = CardsGame()
