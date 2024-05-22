@@ -126,7 +126,6 @@ def last_cards_collection(player_num):
                 last_cards.append(pile[-1])
         else:
             last_cards.append("")
-    # print(last_cards)
 
 
 def player_cards(player_number):
@@ -158,7 +157,7 @@ def next_player(player_number):
         if not distribution_condition_checking():
             distributions += 1
             card_distribution()
-            print("Distribution number", distributions, "Done")
+            # print("Distribution number", distributions, "Done")
             last_cards_collection(player_number)
     else:
         if not distribution_condition_checking():
@@ -205,9 +204,7 @@ def match_card(user_input, player_number):
                     # Your card has been added to the screen cards
                     not_matching(user_input, player_number)
                     next_player(player_number + 1)
-                for i in range(4):
-                    print(players[i])
-                print("/n")
+
     except TypeError:
         next_player(player_number)
 
