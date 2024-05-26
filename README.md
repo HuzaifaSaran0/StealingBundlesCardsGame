@@ -23,7 +23,7 @@ Daketi (Stealing Bundles) is a card game designed for 2 to 4 players. The goal i
     ```
 4. **Run the game**:
     ```sh
-    python TKGame.py
+    python main.py
     ```
 
 ## How to Play
@@ -48,7 +48,7 @@ Daketi (Stealing Bundles) is a card game designed for 2 to 4 players. The goal i
 
 ## Game File and Resources
 
-- `TkGame.py`: Main game script implementing the Daketi card game.
+- `main.py`: Main game script implementing the Daketi card game.
 - `bg.png`: Background image for the game interface.
 - `card.png`: Image for displaying cards.
 - `README.md`: Project documentation.
