@@ -152,5 +152,4 @@ while game_started:
         for player in range(4):
             print(f"Player{player + 1} pile: "
                   f"{piles[player][-1] if piles[player] and not player == players.index(the_player) else []}")
-        card_throw(players.index(the_player))  # Prompt the player to match a card from their
-        # hand with a card on the screen
+        card_throw(players.index(the_player))

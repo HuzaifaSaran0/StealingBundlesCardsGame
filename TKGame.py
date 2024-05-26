@@ -57,7 +57,7 @@ def card_generation(x, y, text):
         card_image.place(x=x, y=y)
         label = Label(tkinter, text=f"{text}", bg="light Grey", fg="black", font=("Arial", 14, "bold"))
         label.place(x=x + 5, y=y + 5)
-        card_widgets.append((card_image, label))  # Store references to the widgets
+        card_widgets.append((card_image, label))  # to store references to the widgets
 
 
 def screen_cards_distribution():

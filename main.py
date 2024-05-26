@@ -13,7 +13,7 @@ class Card_stealing_game:
         self.distributions = 1
         self.dealer_cards = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"] * 4
         self.match_condition = False  # Flag to indicate if a card has matched with screen cards or other player's piles
-        print(f"\n------Distribution number {self.distributions}------")
+        # print(f"\n------Distribution number {self.distributions}------")
         self.screen_cards_distribution()
         self.dealer_Card_distribution()
         self.game_started = True
@@ -23,15 +23,16 @@ class Card_stealing_game:
                     if self.distributions < 3:
                         self.dealer_Card_distribution()
                         self.distributions += 1
-                        print(f"\n------Distribution number {self.distributions}------")
+                        # print(f"\n------Distribution number {self.distributions}------")
                     else:
                         self.Game_over(self.players.index(the_player))
 
-                print(f"\n--------Player{self.players.index(the_player) + 1}'s Turn--------\n")
-                print(f"Your cards: {the_player}")
-                print(f"Screen cards: {self.screen_cards}")
-                for player in range(4):
-                    print(f"Player{player + 1} pile: {self.piles[player][-1] if self.piles[player] and not player == self.players.index(the_player) else []}")
+                # print(f"\n--------Player{self.players.index(the_player) + 1}'s Turn--------\n")
+                # print(f"Your cards: {the_player}")
+                # print(f"Screen cards: {self.screen_cards}")
+                # for player in range(4):
+                #     print(f"Player{player + 1} pile: {self.piles[player][-1] if self.piles[player] and not player
+                #     == self.players.index(the_player) else []}")
                 self.card_throw(self.players.index(the_player))  # Prompt the player to match a card from their
                 # hand with a card on the screen
 
@@ -82,13 +83,14 @@ class Card_stealing_game:
                     self.match_condition = True
                     break
         else:
-            print("Wrong Card Number, Throw Again:")
+            # print("Wrong Card Number, Throw Again:")
             self.card_throw(player_number)
 
     # Function to handle player's turn for throwing a card
     def card_throw(self, player_number):
-        card = input("Enter card number to throw a card:")
-        return self.card_through_type(card, player_number)
+        pass
+        # card = input("Enter card number to throw a card:")
+        # return self.card_through_type(card, player_number)
 
     # Function to handle input validation for card throwing
     def card_through_type(self, card, the_player_number):
@@ -122,18 +124,18 @@ class Card_stealing_game:
 
     # Function to handle end of the game
     def Game_over(self, index_of_last_player_matching):
-        print("------Game Over-------")
+        # print("------Game Over-------")
         self.piles[index_of_last_player_matching].extend(self.screen_cards)
         for i in range(4):
             self.piles[i].extend(self.players[i])
             self.players[i].clear()
         scores = []
-        print("------Scores-------")
+        # print("------Scores-------")
         for scorer in self.piles:
-            print(f"Player {self.piles.index(scorer) + 1}: {len(scorer)}")
+            # print(f"Player {self.piles.index(scorer) + 1}: {len(scorer)}")
             scores.append(len(scorer))
         self.screen_cards.clear()
-        print(f"Winner is Player {scores.index(max(scores)) + 1}")
+        # print(f"Winner is Player {scores.index(max(scores)) + 1}")
         exit()
 
 
